@@ -4,6 +4,7 @@ const diff = require('jest-diff');
 const isPlainObject = require('lodash.isplainobject');
 const prettyFormat = require('pretty-format');
 const icuValidator = require('./message-validators/icu');
+const i18nextValidator = require('./message-validators/i18next');
 const notEmpty = require('./message-validators/not-empty');
 const isString = require('./message-validators/is-string');
 const deepForOwn = require('./util/deep-for-own');
@@ -53,13 +54,18 @@ const formatReceivedValue = ({ value, error }) => {
 
 const createValidator = (syntax) => {
   // each syntax type defined here must have a case!
-  if (['icu', 'non-empty-string'].includes(syntax)) {
+  if (['icu', 'i18next', 'non-empty-string'].includes(syntax)) {
     return (value) => {
       switch (syntax) {
         case 'icu':
           notEmpty(value);
           isString(value);
           icuValidator(value);
+          break;
+        case 'i18next':
+          notEmpty(value);
+          isString(value);
+          i18nextValidator(value);
           break;
         default:
           notEmpty(value);
